@@ -53,6 +53,37 @@ async def get_alerts(state : str) -> str:
     return "\n---\n".join(alerts)
 
 
+@mcp.tool()
+async def get_forecast(latitude : float , longitude : float) -> str:
+    """Fetch weather forecast for a specific state"""
+
+    url = f"https://api.weather.gov/points/{latitude},{longitude}"
+    points_data = await make_nws_request(url)
+
+    if not points_data:
+        return "Unable to fetch forecast data for this location."
+    
+    forecast_url = points_data["properties"]["forecast"]
+    forecast_data = await make_nws_request(forecast_url)
+
+    if not forecast_data:
+        return "Unable to fetch detailed forecast."
+    
+    periods = forecast_data["properties"]["periods"]
+    forecasts = []
+    for period in periods[:5]:  # Show only next 5 periods
+        forecast = f"""
+{period['name']}:
+Temperature: {period['temperature']}°{period['temperatureUnit']}
+Wind: {period['windSpeed']} {period['windDirection']}
+Forecast: {period['detailedForecast']}
+"""
+        forecasts.append(forecast)
+
+    return "\n---\n".join(forecasts)
+
+
+
 def run_server():
     mcp.run(transport='stdio')
 
