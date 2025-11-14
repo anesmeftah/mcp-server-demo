@@ -4,7 +4,7 @@ from mcp.client.stdio import stdio_client
 import json
 
 from google import genai
-client = genai.Client(api_key = "AIzaSyAw4p5pUkU1tTU2dn8Kh5-NXxtkv-mYpf4")
+client = genai.Client(api_key = "")
 
 CITY_TO_STATE = {
     "new york": "NY",
